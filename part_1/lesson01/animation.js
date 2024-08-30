@@ -19,6 +19,7 @@ window.addEventListener("resize", (e) => {
 
   // Update renderer
   renderer.setSize(sizes.width, sizes.height);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 });
 
 // Canvas
@@ -38,10 +39,7 @@ const scene = new THREE.Scene();
 const geometry = new THREE.BoxGeometry(1, 1, 1);
 const material = ({ color }) => new THREE.MeshBasicMaterial({ color: color });
 const mesh = new THREE.Mesh(geometry, material({ color: 0xff0000 }));
-const cube = new THREE.Mesh(geometry, material({ color: 0xfff }));
 scene.add(mesh);
-scene.add(cube);
-cube.position.set(1, 1, 1);
 
 // Camera
 const camera = new THREE.PerspectiveCamera(
@@ -62,6 +60,7 @@ const renderer = new THREE.WebGLRenderer({
   canvas: canvas,
 });
 renderer.setSize(sizes.width, sizes.height);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.render(scene, camera);
 
 // Animations
