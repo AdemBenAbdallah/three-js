@@ -43,8 +43,9 @@ window.addEventListener("mousemove", (e) => {
 const scene = new THREE.Scene();
 
 // Object
-const geometry = new THREE.BoxGeometry(1, 1, 1);
-const material = ({ color }) => new THREE.MeshBasicMaterial({ color: color });
+const geometry = new THREE.BoxGeometry(1, 1, 1, 2, 2, 2);
+const material = ({ color }) =>
+  new THREE.MeshBasicMaterial({ color: color, wireframe: true });
 const mesh = new THREE.Mesh(geometry, material({ color: 0xff0000 }));
 scene.add(mesh);
 
