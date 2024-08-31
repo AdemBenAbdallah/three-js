@@ -1,5 +1,9 @@
+import gsap from "gsap";
+import GUI from "lil-gui";
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+const gui = new GUI();
 
 // Sizes
 const sizes = {
@@ -41,22 +45,33 @@ window.addEventListener("mousemove", (e) => {
 // Scene
 const scene = new THREE.Scene();
 
+const debugObjet = {
+  color: 0xffbe6f,
+};
 // Object
 const geometry = new THREE.BoxGeometry(1, 1, 1, 2, 2, 2);
 const material = ({ color }) =>
   new THREE.MeshBasicMaterial({ color: color, wireframe: true });
-const mesh = new THREE.Mesh(geometry, material({ color: 0xff0000 }));
+const mesh = new THREE.Mesh(geometry, material({ color: debugObjet.color }));
 scene.add(mesh);
 
 // Camera
-const camera = new THREE.PerspectiveCamera(
-  75,
-  sizes.width / sizes.height,
-  0.1,
-  100,
-);
+const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height);
 camera.position.z = 3;
 scene.add(camera);
+
+// Debug
+gui.add(camera.position, "y").min(-3).max(3).step(0.01);
+gui.add(mesh, "visible");
+gui.add(mesh.material, "wireframe");
+gui.addColor(debugObjet, "color").onChange(() => {
+  material.color.set(debugObjet.color);
+});
+
+debugObjet.spin = () => {
+  gsap.to(mesh.rotation, { y: mesh.rotation.y * Math.PI * 2 });
+};
+gui.add(debugObjet, "spin");
 
 // Controls
 const controls = new OrbitControls(camera, canvas);
