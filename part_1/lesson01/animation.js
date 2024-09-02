@@ -15,6 +15,21 @@ window.addEventListener("keydown", (e) => {
   }
 });
 
+// Texture
+const textureLoader = new THREE.TextureLoader();
+const texture = textureLoader.load(
+  "/static/teture.jpg",
+  () => {
+    console.log("loaded");
+  },
+  () => {
+    console.log("progress");
+  },
+  (error) => {
+    console.log(error);
+  }
+);
+
 // Sizes
 const sizes = {
   width: window.innerWidth,
@@ -58,11 +73,11 @@ const scene = new THREE.Scene();
 const debugObjet = {
   color: 0xffbe6f,
 };
+
 // Object
 const geometry = new THREE.BoxGeometry(1, 1, 1, 2, 2, 2);
-const material = ({ color }) =>
-  new THREE.MeshBasicMaterial({ color: color, wireframe: true });
-const mesh = new THREE.Mesh(geometry, material({ color: debugObjet.color }));
+const material = ({ map }) => new THREE.MeshBasicMaterial({ map: map });
+const mesh = new THREE.Mesh(geometry, material({ map: texture }));
 scene.add(mesh);
 
 // Camera
