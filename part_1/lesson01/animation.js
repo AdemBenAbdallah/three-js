@@ -3,7 +3,17 @@ import GUI from "lil-gui";
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
-const gui = new GUI();
+const gui = new GUI({
+  width: 340,
+  title: "Nive Debug UI",
+});
+gui.hide();
+
+window.addEventListener("keydown", (e) => {
+  if (e.key === "h") {
+    gui.show(gui._hidden);
+  }
+});
 
 // Sizes
 const sizes = {
@@ -61,17 +71,36 @@ camera.position.z = 3;
 scene.add(camera);
 
 // Debug
-gui.add(camera.position, "y").min(-3).max(3).step(0.01);
-gui.add(mesh, "visible");
-gui.add(mesh.material, "wireframe");
-gui.addColor(debugObjet, "color").onChange(() => {
+const cubeTweaks = gui.addFolder("Awesome cube");
+
+cubeTweaks.add(camera.position, "y").min(-3).max(3).step(0.01);
+cubeTweaks.add(mesh, "visible");
+cubeTweaks.add(mesh.material, "wireframe");
+cubeTweaks.addColor(debugObjet, "color").onChange(() => {
   material.color.set(debugObjet.color);
 });
 
 debugObjet.spin = () => {
-  gsap.to(mesh.rotation, { y: mesh.rotation.y * Math.PI * 2 });
+  gsap.to(mesh.rotation, { y: mesh.rotation.y + Math.PI * 2 });
 };
-gui.add(debugObjet, "spin");
+cubeTweaks.add(debugObjet, "spin");
+debugObjet.subdivision = 2;
+cubeTweaks
+  .add(debugObjet, "subdivision")
+  .min(1)
+  .max(10)
+  .step(0.1)
+  .onFinishChange(() => {
+    mesh.geometry.dispose();
+    mesh.geometry = new THREE.BoxGeometry(
+      1,
+      1,
+      1,
+      debugObjet.subdivision,
+      debugObjet.subdivision,
+      debugObjet.subdivision
+    );
+  });
 
 // Controls
 const controls = new OrbitControls(camera, canvas);
